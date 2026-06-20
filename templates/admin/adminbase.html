@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BSC Admin Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/adminstyle.css') }}" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-dark fixed-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center" href="{{ url_for('adminhome') }}">
+        <span class="fw-800 me-2">BSC</span>
+        <span class="opacity-75 small border-start ps-2">Admin Portal</span>
+      </a>
+      <div class="d-flex align-items-center">
+        <span class="text-white opacity-75 me-3 small d-none d-md-block">Welcome, Administrator</span>
+        <form method="POST" action="{{ url_for('logout') }}" class="m-0">
+          <button type="submit" class="btn btn-sm btn-light fw-bold px-3">Logout</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link {% if request.path == url_for('adminhome') %}active{% endif %}" href="{{ url_for('adminhome') }}">
+          <i class="bi bi-speedometer2 me-2"></i> Dashboard
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#masterMenu">
+          <span><i class="bi bi-gear me-2"></i> Master</span>
+          <i class="bi bi-chevron-right nav-arrow"></i>
+        </a>
+        <div class="collapse" id="masterMenu">
+          <ul class="nav flex-column ms-4">
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('admincourse') }}">Courses</a></li>
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('adminsubject') }}">Subjects</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#facultyMenu">
+          <span><i class="bi bi-people me-2"></i> Faculty</span>
+          <i class="bi bi-chevron-right nav-arrow"></i>
+        </a>
+        <div class="collapse" id="facultyMenu">
+          <ul class="nav flex-column ms-4">
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('adminfaculty') }}">Faculty List</a></li>
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('adminassignsubject') }}">Assign Subject</a></li>
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('admintimetable') }}">Time Table</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#studentsMenu">
+          <span><i class="bi bi-mortarboard me-2"></i> Students</span>
+          <i class="bi bi-chevron-right nav-arrow"></i>
+        </a>
+        <div class="collapse" id="studentsMenu">
+          <ul class="nav flex-column ms-4">
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('adminstudent') }}">Student Records</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#coursesMenu">
+          <span><i class="bi bi-journal-text me-2"></i> Internal Marks</span>
+          <i class="bi bi-chevron-right nav-arrow"></i>
+        </a>
+        <div class="collapse" id="coursesMenu">
+          <ul class="nav flex-column ms-4">
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('admininternalwise') }}">Internal Entry</a></li>
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('admininternalreport') }}">Performance Report</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#attMenu">
+          <span><i class="bi bi-calendar-check me-2"></i> Attendance</span>
+          <i class="bi bi-chevron-right nav-arrow"></i>
+        </a>
+        <div class="collapse" id="attMenu">
+          <ul class="nav flex-column ms-4">
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('admin_attendance_report') }}">Daily Report</a></li>
+            <li class="nav-item"><a class="nav-link small" href="{{ url_for('admin_final_attendance_report') }}">Consolidated Report</a></li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.querySelectorAll('.collapse').forEach(function (collapseEl) {
+      collapseEl.addEventListener('show.bs.collapse', function () {
+        const toggleLink = document.querySelector(`[href="#${this.id}"]`);
+        if (toggleLink) toggleLink.querySelector('.nav-arrow').classList.add('rotate');
+      });
+      collapseEl.addEventListener('hide.bs.collapse', function () {
+        const toggleLink = document.querySelector(`[href="#${this.id}"]`);
+        if (toggleLink) toggleLink.querySelector('.nav-arrow').classList.remove('rotate');
+      });
+    });
+  </script>
+</body>
+</html>

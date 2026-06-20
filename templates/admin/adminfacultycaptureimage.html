@@ -1,0 +1,145 @@
+{% extends 'admin/adminbase.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; background: var(--primary-color);">
+    <div class="card-body p-4 d-flex justify-content-between align-items-center">
+      <div>
+        <h3 class="text-white fw-bold mb-0">Biometric Registration</h3>
+        <p class="text-white opacity-75 mb-0 small">Capture high-quality face images for AI model training</p>
+      </div>
+      <a href="{{ url_for('adminfaculty') }}" class="btn btn-light fw-bold px-4 rounded-pill shadow-sm">
+        <i class="bi bi-arrow-left me-2"></i>Back to List
+      </a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid var(--primary-color) !important;">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="row g-4 justify-content-center">
+    <!-- Camera Section -->
+    <div class="col-md-7">
+      <div class="card shadow-sm border-2 h-100" style="border-color: var(--primary-color) !important; border-radius: 20px; overflow: hidden;">
+        <div class="card-header bg-white py-3 border-0">
+          <h5 class="fw-bold mb-0" style="color: var(--primary-color);"><i class="bi bi-camera-video me-2"></i>Live Camera Feed</h5>
+        </div>
+        <div class="card-body p-4 text-center">
+          <div class="video-container mb-4 mx-auto" style="width: 100%; max-width: 480px; border-radius: 15px; overflow: hidden; border: 4px solid #f8fafb; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <video id="video" width="100%" autoplay style="transform: scaleX(-1);"></video>
+          </div>
+          <button class="btn text-white fw-bold px-5 py-2 rounded-pill shadow-sm" id="captureButton" style="background-color: var(--primary-color);">
+            <i class="bi bi-camera me-2"></i>Capture Photo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview & Status Section -->
+    <div class="col-md-5">
+      <div class="card shadow-sm border-2 h-100" style="border-color: var(--primary-color) !important; border-radius: 20px; overflow: hidden;">
+        <div class="card-header bg-white py-3 border-0">
+          <h5 class="fw-bold mb-0" style="color: var(--primary-color);"><i class="bi bi-image me-2"></i>Capture Status</h5>
+        </div>
+        <div class="card-body p-4 text-center d-flex flex-column justify-content-center">
+          <div id="capturedImage" class="d-none">
+            <h6 class="text-muted small fw-bold mb-3">LAST CAPTURE PREVIEW</h6>
+            <div class="mb-4 mx-auto" style="width: 200px; height: 150px; border-radius: 10px; overflow: hidden; border: 2px solid var(--primary-color);">
+              <img id="imagePreview" src="" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);">
+            </div>
+            <button class="btn btn-outline-dark fw-bold px-4 rounded-pill" id="saveButton">
+              <i class="bi bi-cloud-upload me-2"></i>Save to Profile
+            </button>
+          </div>
+
+          <div id="placeholder" class="py-5">
+            <i class="bi bi-person-bounding-box fs-1 opacity-25 d-block mb-2"></i>
+            <p class="text-muted mb-0">No image captured yet</p>
+          </div>
+
+          <div id="statusMessage" class="mt-4 p-3 rounded-4 d-none" style="background-color: #f8fafb; border: 1px solid rgba(0,76,76,0.1);">
+            <p id="statusText" class="fw-bold mb-0 small" style="color: var(--primary-color);"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const video = document.getElementById("video");
+  const captureButton = document.getElementById("captureButton");
+  const saveButton = document.getElementById("saveButton");
+  const capturedImageContainer = document.getElementById("capturedImage");
+  const placeholder = document.getElementById("placeholder");
+  const imagePreview = document.getElementById("imagePreview");
+  const statusMessage = document.getElementById("statusMessage");
+  const statusText = document.getElementById("statusText");
+
+  let capturedImagesCount = 0;
+  const maxImages = 20;
+  const minImages = 5;
+
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then((stream) => {
+      video.srcObject = stream;
+      video.play();
+    })
+    .catch((err) => {
+      alert("Error accessing webcam: " + err);
+    });
+
+  captureButton.addEventListener("click", () => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageUrl = canvas.toDataURL("image/png");
+    imagePreview.src = imageUrl;
+    capturedImageContainer.classList.remove("d-none");
+    placeholder.classList.add("d-none");
+    captureButton.disabled = true;
+    saveButton.disabled = false;
+  });
+
+  saveButton.addEventListener("click", () => {
+    const imageData = { image_data: imagePreview.src };
+
+    fetch("{{ url_for('capture_image_view', id=id) }}", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(imageData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        capturedImagesCount++;
+        if (capturedImagesCount < minImages) {
+          statusText.innerText = `Captured ${capturedImagesCount} / ${minImages} required images.`;
+        } else {
+          statusText.innerText = `Successful! Total images: ${capturedImagesCount}. (Max: ${maxImages})`;
+        }
+        statusMessage.classList.remove("d-none");
+        captureButton.disabled = false;
+        capturedImageContainer.classList.add("d-none");
+        placeholder.classList.remove("d-none");
+        saveButton.disabled = true;
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(err => alert("Error: " + err));
+  });
+</script>
+{% endblock %}

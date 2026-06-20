@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .video-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 4px solid var(--primary-color);
+    box-shadow: var(--shadow-lg);
+    background: #000;
+  }
+  #video {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+</style>
+
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <h2 class="section-title">Faculty Access</h2>
+        <p class="text-muted lead">Choose your preferred method of authentication to access the portal.</p>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="row mb-4">
+                <div class="col-md-10 mx-auto">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show border-0 shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="row g-5">
+        <!-- Credentials Login -->
+        <div class="col-md-6">
+            <div class="card p-4 h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-4 text-center">
+                        <span style="font-size: 2.5rem; color: var(--primary-color);">🔐</span>
+                        <h3 class="h4 mt-2">Password Login</h3>
+                    </div>
+                    <form method="POST" action="/faculty_login">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small">Username</label>
+                            <input type="text" class="form-control form-control-lg border-2 shadow-none" name="username" placeholder="Enter here..." required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small">Password</label>
+                            <input type="password" class="form-control form-control-lg border-2 shadow-none" name="password" placeholder="Enter here..." required>
+                        </div>
+                        <button type="submit" class="btn btn-lg w-100 py-3 fw-bold text-white shadow-sm" style="background-color: var(--primary-color);">
+                            Login as Faculty
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Face Login -->
+        <div class="col-md-6">
+            <div class="card p-4 h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <span style="font-size: 2.5rem; color: var(--primary-color);">📸</span>
+                        <h3 class="h4 mt-2">Biometric Login</h3>
+                    </div>
+                    <div class="video-wrapper mb-4 mx-auto" style="max-width: 400px;">
+                        <video id="video" autoplay></video>
+                    </div>
+                    <div class="d-grid gap-2 col-lg-10 mx-auto">
+                        <button id="loginBtn" class="btn btn-lg btn-outline-dark fw-bold py-3 shadow-sm">
+                            Login with Face
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  const video = document.getElementById('video');
+  const loginBtn = document.getElementById('loginBtn');
+
+  // Accessing user's camera
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => { video.srcObject = stream; })
+    .catch(err => alert('Could not access camera.'));
+
+  // On button click, capture the image from the video feed
+  loginBtn.addEventListener('click', () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = canvas.toDataURL('image/png');
+    fetch('/user_login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_data: imageData })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        window.location.href = `/facultyhome?fid=${encodeURIComponent(data.fid)}`;
+      } else {
+        alert(data.message);
+      }
+    })
+    .catch(err => alert('Login failed.'));
+  });
+</script>
+{% endblock %}

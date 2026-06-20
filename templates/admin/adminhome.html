@@ -1,0 +1,70 @@
+{% extends 'admin/adminbase.html' %}
+{% block content %}
+
+<div class="row g-4">
+    <!-- Hero Section -->
+    <div class="col-12">
+        <div class="p-5 text-white rounded-4 shadow-lg border-0 mb-2" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--sidebar-bg) 100%);">
+            <h1 class="display-6 fw-bold mb-3">Welcome to BSC Admin Portal</h1>
+            <p class="lead mb-0 opacity-75">Your central hub for academic management and real-time attendance monitoring.</p>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="col-md-3">
+        <div class="card p-4 h-100 text-center border-0 shadow-sm" style="border-left: 5px solid var(--primary-color) !important;">
+            <div class="mb-3">
+                <i class="bi bi-mortarboard fs-1" style="color: var(--primary-color);"></i>
+            </div>
+            <h2 class="fw-800 mb-1">{{ stats.students }}</h2>
+            <p class="text-muted small text-uppercase fw-bold mb-0">Total Students</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-4 h-100 text-center border-0 shadow-sm" style="border-left: 5px solid var(--primary-color) !important;">
+            <div class="mb-3">
+                <i class="bi bi-people fs-1" style="color: var(--primary-color);"></i>
+            </div>
+            <h2 class="fw-800 mb-1">{{ stats.faculty }}</h2>
+            <p class="text-muted small text-uppercase fw-bold mb-0">Total Faculty</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-4 h-100 text-center border-0 shadow-sm" style="border-left: 5px solid var(--primary-color) !important;">
+            <div class="mb-3">
+                <i class="bi bi-journal-bookmark fs-1" style="color: var(--primary-color);"></i>
+            </div>
+            <h2 class="fw-800 mb-1">{{ stats.subjects }}</h2>
+            <p class="text-muted small text-uppercase fw-bold mb-0">Total Subjects</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-4 h-100 text-center border-0 shadow-sm" style="border-left: 5px solid var(--primary-color) !important;">
+            <div class="mb-3">
+                <i class="bi bi-calendar-check fs-1" style="color: var(--primary-color);"></i>
+            </div>
+            <h2 class="fw-800 mb-1">{{ stats.attendance_today }}</h2>
+            <p class="text-muted small text-uppercase fw-bold mb-0">Today's Attendance</p>
+        </div>
+    </div>
+
+    <!-- Quick Access / Info Card -->
+    <div class="col-12">
+        <div class="card p-4 border-0 shadow-sm mt-2">
+            <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge me-2"></i> Quick Insights</h5>
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <p class="text-muted mb-0">The system is currently monitoring **{{ stats.courses }}** active courses. All academic modules are synchronized with the central database for real-time reporting.</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a href="{{ url_for('admin_attendance_report') }}" class="btn btn-outline-dark fw-bold btn-sm px-4">View Full Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

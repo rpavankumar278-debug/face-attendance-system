@@ -1,0 +1,41 @@
+<!-- Add Subject Modal -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ url_for('adminsubject') }}" class="w-100">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="modal-header text-white border-0 py-4" style="background-color: var(--primary-color); border-radius: 20px 20px 0 0;">
+          <h5 class="modal-title fw-bold"><i class="bi bi-journal-plus me-2"></i>Register New Subject</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label for="course" class="form-label fw-bold small">Course Selection</label>
+            <select class="form-select" id="course" name="course" required>
+              <option value="" disabled selected>Select a Course</option>
+              {% for course in courses %}
+                <option value="{{ course[1] }}">{{ course[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="sem" class="form-label fw-bold small">Semester</label>
+            <select class="form-select" id="sem" name="sem" required>
+              <option value="" disabled selected>Select a Semester</option>
+              {% for s in sem %}
+                <option value="{{ s[1] }}">{{ s[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="subject" class="form-label fw-bold small">Subject Title</label>
+            <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter here..." required>
+          </div>
+        </div>
+        <div class="modal-footer border-0 p-4 pt-0">
+          <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn text-white fw-bold px-4" style="background-color: var(--primary-color);">Save Subject</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

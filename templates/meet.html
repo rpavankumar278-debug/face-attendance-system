@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <h2 class="section-title">Meet Us</h2>
+    </div>
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div class="campus-life h-100">
+                <h3 class="h4 mb-4">Visit Our Campus</h3>
+                <p class="lead mb-4">Come visit B S Channabasappa College and experience our vibrant academic community firsthand.</p>
+                <p>We invite prospective students, parents, and partners to tour our campus and interact with our distinguished faculty.</p>
+                <ul class="mt-4">
+                    <li>Campus Tours: Monday – Friday (10:00 AM - 4:00 PM)</li>
+                    <li>Interactive sessions with Department Heads</li>
+                    <li>Guided visits to Research Labs and Library</li>
+                    <li>On-the-spot admissions and career guidance</li>
+                </ul>
+                <div class="mt-5">
+                    <h4 class="h5 text-primary mb-3">Location</h4>
+                    <p class="text-muted">BSC College Campus,<br>Davanagere, Karnataka - 577002</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="achievements h-100">
+                <h3 class="h4 mb-4">Get in Touch</h3>
+                <form method="POST" action="/meet">
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold small">Full Name</label>
+                        <input type="text" class="form-control form-control-lg border-2 shadow-none" id="name" placeholder="Enter here..." required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-bold small">Email Address</label>
+                        <input type="email" class="form-control form-control-lg border-2 shadow-none" id="email" placeholder="Enter here..." required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="form-label fw-bold small">Message</label>
+                        <textarea class="form-control border-2 shadow-none" id="message" rows="5" placeholder="Enter here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-lg w-100 py-3 fw-bold text-white" style="background-color: var(--primary-color);">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

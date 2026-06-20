@@ -1,0 +1,152 @@
+{% extends 'faculty/facultybase.html' %}
+{% block content %}
+
+<div class="container-fluid">
+    <!-- Welcome Header -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="p-5 text-white rounded-4 shadow-lg border-0 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, var(--primary-color) 0%, #006666 100%);">
+                <div>
+                    <h1 class="display-6 fw-bold mb-2">Welcome Back, Prof. {{ name }}!</h1>
+                    <p class="lead mb-0 opacity-75">Your administrative dashboard for academic monitoring and assessment management.</p>
+                </div>
+                <div class="d-none d-lg-block text-end">
+                    <div class="bg-white bg-opacity-25 rounded-pill px-4 py-2 small fw-bold">
+                        <i class="bi bi-clock me-2"></i>{{ now.strftime('%d %b, %Y') if now else 'Academic Portal' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="row g-4">
+        <!-- Subjects Card -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; transition: transform 0.3s ease;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-journal-bookmark-fill text-primary fs-4" style="color: var(--primary-color) !important;"></i>
+                        </div>
+                        <span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: var(--primary-color);">{{ stats.total_subjects }}</h3>
+                    <p class="text-muted small fw-bold text-uppercase mb-0 ls-1">Assigned Subjects</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Card -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-people-fill text-primary fs-4" style="color: var(--primary-color) !important;"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: var(--primary-color);">{{ stats.total_students }}</h3>
+                    <p class="text-muted small fw-bold text-uppercase mb-0 ls-1">Total Students</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marks Card -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-file-earmark-check-fill text-primary fs-4" style="color: var(--primary-color) !important;"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: var(--primary-color);">{{ stats.total_marks_entries }}</h3>
+                    <p class="text-muted small fw-bold text-uppercase mb-0 ls-1">Marks Submissions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Today Card -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background-color: var(--primary-color);">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3 text-white">
+                        <div class="rounded-3 bg-white bg-opacity-25 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-calendar2-check fs-4"></i>
+                        </div>
+                        <span class="small fw-bold opacity-75 text-uppercase">Today</span>
+                    </div>
+                    <h3 class="fw-bold mb-1 text-white">{{ stats.attendance_today }}</h3>
+                    <p class="text-white opacity-75 small fw-bold text-uppercase mb-0 ls-1">Students Verified</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Management Panel -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 20px;">
+                <h5 class="fw-bold mb-4" style="color: var(--primary-color);">Academic Operations</h5>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <a href="{{ url_for('facultyinternalmarks') }}" class="text-decoration-none h-100">
+                            <div class="p-4 rounded-4 border-2 border-dashed d-flex align-items-center hover-card" style="border: 2px dashed #dee2e6;">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3">
+                                    <i class="bi bi-plus-circle-fill text-primary fs-4" style="color: var(--primary-color) !important;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-dark">Submit Marks</h6>
+                                    <p class="text-muted small mb-0">Record internal assessment scores</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('facultystudentattendance') }}" class="text-decoration-none h-100">
+                            <div class="p-4 rounded-4 border-2 border-dashed d-flex align-items-center hover-card" style="border: 2px dashed #dee2e6;">
+                                <div class="bg-success bg-opacity-10 p-3 rounded-3 me-3">
+                                    <i class="bi bi-shield-check text-success fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-dark">Daily Attendance</h6>
+                                    <p class="text-muted small mb-0">Review today's verification logs</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('facultytimetable') }}" class="text-decoration-none h-100">
+                            <div class="p-4 rounded-4 border-2 border-dashed d-flex align-items-center hover-card" style="border: 2px dashed #dee2e6;">
+                                <div class="bg-warning bg-opacity-10 p-3 rounded-3 me-3">
+                                    <i class="bi bi-calendar3 text-warning fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-dark">My Schedule</h6>
+                                    <p class="text-muted small mb-0">Check weekly class timetable</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ls-1 { letter-spacing: 1px; }
+    .bg-success-subtle { background-color: rgba(25, 135, 84, 0.1) !important; }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .hover-card:hover {
+        border-color: var(--primary-color) !important;
+        background-color: #f8f9fa;
+    }
+    .border-dashed { border-style: dashed !important; }
+</style>
+
+{% endblock %}

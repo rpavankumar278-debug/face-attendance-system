@@ -1,0 +1,44 @@
+<!-- Add/Edit Faculty Modal -->
+<div class="modal fade" id="addFacultyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ url_for('adminfaculty') }}" class="w-100">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="modal-header text-white border-0 py-4" style="background-color: var(--primary-color); border-radius: 20px 20px 0 0;">
+          <h5 class="modal-title fw-bold"><i class="bi bi-person-plus me-2"></i>Faculty Profile Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" name="id" id="faculty_id" />
+
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label fw-bold small">Full Name</label>
+              <input type="text" name="name" id="faculty_name" class="form-control" placeholder="Enter here..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Mobile Number</label>
+              <input type="text" name="mobile" id="faculty_mobile" class="form-control" placeholder="Enter here..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Email Address</label>
+              <input type="email" name="emailid" id="faculty_email" class="form-control" placeholder="Enter here..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Department</label>
+              <input type="text" name="department" id="faculty_department" class="form-control" placeholder="Enter here..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Access Password</label>
+              <input type="text" name="password" id="faculty_password" class="form-control" placeholder="Enter here..." required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 p-4 pt-0">
+          <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn text-white fw-bold px-4" style="background-color: var(--primary-color);">Save Profile</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+  

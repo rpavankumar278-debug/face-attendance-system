@@ -1,0 +1,97 @@
+{% extends 'student/studentbase.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; background: var(--primary-color);">
+    <div class="card-body p-4">
+      <h3 class="text-white fw-bold mb-0">Internal Assessment Report</h3>
+      <p class="text-white opacity-75 mb-0 small">Review your academic performance across different internal examinations</p>
+    </div>
+  </div>
+
+  <!-- Filter Control -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card-body p-4">
+      <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label fw-bold small text-muted">ACADEMIC SUBJECT</label>
+          <select class="form-select border-2" id="subject" name="subject">
+            <option value="">All Subjects</option>
+            {% for subj in subjects %}
+              <option value="{{ subj }}" {% if subj == selected_subject %}selected{% endif %}>{{ subj }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label fw-bold small text-muted">EXAM SESSION</label>
+          <select class="form-select border-2" id="exam_type" name="exam_type">
+            <option value="">All Exams</option>
+            {% for exam in exam_types %}
+              <option value="{{ exam }}" {% if exam == selected_exam_type %}selected{% endif %}>{{ exam }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <button type="submit" class="btn text-white fw-bold w-100 rounded-3 py-2 shadow-sm" style="background-color: var(--primary-color);">
+            <i class="bi bi-filter me-2"></i>Apply Filter
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Marks Results -->
+  <div class="card shadow-sm border-2" style="border-color: var(--primary-color) !important; border-radius: 20px; overflow: hidden;">
+    <div class="card-header bg-white py-3 border-0">
+      <h5 class="fw-bold mb-0" style="color: var(--primary-color);">Scorecard Summary</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead>
+            <tr>
+              <th class="px-4 py-3">Subject Name</th>
+              <th class="py-3">Assessment</th>
+              <th class="py-3 text-center">Marks Obtained</th>
+              <th class="py-3 text-center">Total Score</th>
+              <th class="px-4 py-3">Evaluated By</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for mark in internal_marks %}
+              <tr>
+                <td class="px-4 fw-bold">{{ mark[0] }}</td>
+                <td class="text-muted small fw-bold">INTERNAL {{ mark[1] }}</td>
+                <td class="text-center">
+                  <span class="fs-5 fw-bold" style="color: var(--primary-color);">{{ mark[2] }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-light text-dark border px-3">{{ mark[3] }}</span>
+                </td>
+                <td class="px-4">
+                  <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                      <i class="bi bi-person text-muted"></i>
+                    </div>
+                    <span class="small fw-bold text-muted">{{ mark[4] }}</span>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center py-5 text-muted">
+                  <i class="bi bi-journal-x d-block fs-1 mb-2 opacity-25"></i>
+                  No assessment data recorded for the selected criteria.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

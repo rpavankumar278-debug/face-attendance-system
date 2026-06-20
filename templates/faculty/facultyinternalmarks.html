@@ -1,0 +1,181 @@
+{% extends 'faculty/facultybase.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; background: var(--primary-color);">
+    <div class="card-body p-4">
+      <h3 class="text-white fw-bold mb-0">Internal Marks Entry</h3>
+      <p class="text-white opacity-75 mb-0 small">Faculty: {{ name }} | Academic Performance Management</p>
+    </div>
+  </div>
+
+  <form method="POST" id="marksForm">
+    <!-- Configuration Section -->
+    <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+      <div class="card-body p-4">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label fw-bold small text-muted">ASSESSMENT SESSION</label>
+            <select name="internal_exam" id="internal_exam" class="form-select border-2" required>
+              <option value="">Select Exam</option>
+              <option value="I" {% if request.args.get('internal_exam') == 'I' %} selected {% endif %}>Internal I</option>
+              <option value="II" {% if request.args.get('internal_exam') == 'II' %} selected {% endif %}>Internal II</option>
+              <option value="III" {% if request.args.get('internal_exam') == 'III' %} selected {% endif %}>Internal III</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-bold small text-muted">ACADEMIC COURSE</label>
+            <select name="course" id="course" class="form-select border-2" required>
+              <option value="">Select Course</option>
+              {% for course in courses %}
+                <option value="{{ course }}" {% if course == request.args.get('course') %} selected {% endif %}>{{ course }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label fw-bold small text-muted">SEMESTER</label>
+            <select name="sem" id="sem" class="form-select border-2" required>
+              <option value="">Select Sem</option>
+              {% for sem in unique_sems %}
+                <option value="{{ sem[0] }}" {% if sem[0] == request.args.get('sem') %} selected {% endif %}>{{ sem[0] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label fw-bold small text-muted">SUBJECT</label>
+            <select name="subject" id="subject" class="form-select border-2" required>
+              <option value="">Select Subject</option>
+              {% for subject in subjects %}
+                <option value="{{ subject[0] }}" {% if subject[0] == request.args.get('subject') %} selected {% endif %}>{{ subject[0] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label fw-bold small text-muted">MAX MARKS</label>
+            <input type="number" name="total_marks" id="total_marks" class="form-control border-2 fw-bold" min="0" max="100" value="{{ request.form.get('total_marks', 100) }}" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Marks Table -->
+    {% if marks_entered %}
+      <div class="alert alert-warning border-0 shadow-sm" style="border-radius: 15px; border-left: 5px solid #ffc107 !important;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>Marks for this combination have already been finalized and cannot be modified.
+      </div>
+    {% else %}
+      {% if students %}
+        <div class="card shadow-sm border-2 mb-4" style="border-color: var(--primary-color) !important; border-radius: 20px; overflow: hidden;">
+          <div class="card-header bg-white py-3 border-0">
+            <h5 class="fw-bold mb-0" style="color: var(--primary-color);">Student Performance Sheet</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0 align-middle">
+                <thead>
+                  <tr>
+                    <th class="px-4 py-3">Student ID</th>
+                    <th class="py-3">Full Name</th>
+                    <th class="px-4 py-3 text-center" style="width: 200px;">Marks Secured</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in students %}
+                    <tr>
+                      <td class="px-4 fw-bold text-muted small">
+                        #{{ student[0] }}
+                        <input type="hidden" name="student_ids" value="{{ student[0] }}">
+                      </td>
+                      <td class="fw-bold">{{ student[1] }}</td>
+                      <td class="px-4 text-center">
+                        <input type="number" name="marks_{{ student[0] }}" class="form-control student-mark border-2 text-center fw-bold mx-auto" style="max-width: 100px; border-radius: 10px;" min="0" max="100" required data-student-id="{{ student[0] }}">
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer bg-white border-0 p-4 text-end">
+            <button type="submit" class="btn text-white fw-bold px-5 py-2 rounded-pill shadow-sm" style="background-color: var(--primary-color);">
+              <i class="bi bi-cloud-upload me-2"></i>Finalize & Submit Marks
+            </button>
+          </div>
+        </div>
+      {% else %}
+        <div class="card shadow-sm border-0 py-5" style="border-radius: 20px;">
+          <div class="card-body text-center">
+            <i class="bi bi-funnel d-block fs-1 mb-3 opacity-25"></i>
+            <h5 class="text-muted">Selection Required</h5>
+            <p class="text-muted small">Please choose the Exam, Course, and Subject to load the student list.</p>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+  </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const internalExam = document.getElementById('internal_exam');
+  const course = document.getElementById('course');
+  const sem = document.getElementById('sem');
+  const subject = document.getElementById('subject');
+  const totalMarks = document.getElementById('total_marks');
+  const form = document.getElementById('marksForm');
+
+  course.disabled = !internalExam.value;
+  sem.disabled = !course.value;
+  subject.disabled = !sem.value;
+  totalMarks.disabled = !subject.value;
+
+  internalExam.addEventListener('change', () => {
+    if (internalExam.value) course.disabled = false;
+  });
+
+  course.addEventListener('change', () => {
+    if (course.value) {
+      window.location.href = `?internal_exam=${internalExam.value}&course=${course.value}`;
+    }
+  });
+
+  sem.addEventListener('change', () => {
+    if (sem.value) {
+      window.location.href = `?internal_exam=${internalExam.value}&course=${course.value}&sem=${sem.value}`;
+    }
+  });
+
+  subject.addEventListener('change', () => {
+    if (subject.value) {
+      window.location.href = `?internal_exam=${internalExam.value}&course=${course.value}&sem=${sem.value}&subject=${subject.value}`;
+    }
+  });
+
+  form.addEventListener('submit', function (e) {
+    const total = parseInt(totalMarks.value);
+    let isValid = true;
+    let errorMessage = '';
+
+    document.querySelectorAll('.student-mark').forEach(input => {
+      const mark = parseInt(input.value);
+      const studentId = input.getAttribute('data-student-id');
+
+      if (mark > total) {
+        isValid = false;
+        errorMessage += `Marks for student ID ${studentId} exceed total marks (${total}).\n`;
+      }
+    });
+
+    if (!isValid) {
+      e.preventDefault();
+      alert(errorMessage);
+    }
+  });
+});
+</script>
+{% endblock %}

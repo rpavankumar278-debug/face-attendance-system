@@ -1,0 +1,36 @@
+{% extends 'faculty/facultybase.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-3">Time Table for {{ name }} ({{ fid }})</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered text-center align-middle">
+      <thead class="table-dark">
+        <tr>
+            <th>Day \ Time</th>
+            {% for slot in time_slots %}
+            <th>{{ slot[0] }} - {{ slot[1] }}</th>
+            {% endfor %}
+          </tr>
+      </thead>
+      <tbody>
+        {% for day in weekdays %}
+        <tr>
+          <th class="table-dark">{{ day }}</th>
+          {% for slot in time_slots %}
+          <td>
+            {% if timetable.get(day) and timetable[day].get(slot[0]) %}
+              {{ timetable[day][slot[0]]|safe }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

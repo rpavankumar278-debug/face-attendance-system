@@ -1,0 +1,142 @@
+{% extends 'admin/adminbase.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; background: var(--primary-color);">
+    <div class="card-body p-4">
+      <h3 class="text-white fw-bold mb-0">Internal Examination Reports</h3>
+      <p class="text-white opacity-75 mb-0 small">Review student performance across different internal assessments</p>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card-body p-4">
+      <form method="GET">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label fw-bold small">Exam Session</label>
+            <select name="internal_exam" id="internal_exam" class="form-select border-2" required>
+              <option value="">Select Exam</option>
+              <option value="I" {% if selected_internal_exam == 'I' %} selected {% endif %}>Internal I</option>
+              <option value="II" {% if selected_internal_exam == 'II' %} selected {% endif %}>Internal II</option>
+              <option value="III" {% if selected_internal_exam == 'III' %} selected {% endif %}>Internal III</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-bold small">Course / Stream</label>
+            <select name="course" id="course" class="form-select border-2" required>
+              <option value="">Select Course</option>
+              {% for course in courses %}
+                <option value="{{ course }}" {% if selected_course == course %} selected {% endif %}>{{ course }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label fw-bold small">Semester</label>
+            <select name="sem" id="sem" class="form-select border-2" required>
+              <option value="">Select Sem</option>
+              {% for sem in unique_sems %}
+                <option value="{{ sem[0] }}" {% if selected_sem == sem[0] %} selected {% endif %}>{{ sem[0] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-bold small">Academic Subject</label>
+            <select name="subject" id="subject" class="form-select border-2" required>
+              <option value="">Select Subject</option>
+              {% for subject in subjects %}
+                <option value="{{ subject[0] }}" {% if selected_subject == subject[0] %} selected {% endif %}>{{ subject[0] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-1">
+            <button type="submit" class="btn text-white fw-bold w-100 rounded-3 py-2 shadow-sm" style="background-color: var(--primary-color);">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Results Table -->
+  {% if students and selected_internal_exam and selected_subject %}
+    <div class="card shadow-sm border-2" style="border-color: var(--primary-color) !important; border-radius: 20px; overflow: hidden;">
+      <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0" style="color: var(--primary-color);">Performance Breakdown: {{ selected_subject }}</h5>
+        <span class="badge rounded-pill bg-light text-dark border px-3">Exam: Internal {{ selected_internal_exam }}</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead>
+              <tr>
+                <th class="px-4 py-3">Student ID</th>
+                <th class="py-3">Full Name</th>
+                <th class="px-4 py-3 text-center">Marks Obtained</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set marks_dict = dict(marks_data) %}
+              {% for student in students %}
+                <tr>
+                  <td class="px-4 fw-bold text-muted small">#{{ student[0] }}</td>
+                  <td class="fw-bold">{{ student[1] }}</td>
+                  <td class="px-4 text-center">
+                    {% if student[0] in marks_dict %}
+                      <span class="fw-bold fs-5" style="color: var(--primary-color);">{{ marks_dict[student[0]] }}</span>
+                    {% else %}
+                      <span class="badge bg-light text-muted border px-3">Not Entered</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% elif selected_internal_exam and selected_subject %}
+    <div class="card shadow-sm border-0 py-5" style="border-radius: 20px;">
+      <div class="card-body text-center">
+        <i class="bi bi-file-earmark-x d-block fs-1 mb-3 opacity-25"></i>
+        <h5 class="text-muted">No assessment records found for this selection.</h5>
+        <p class="text-muted small">Please verify the filters and try again.</p>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const course = document.getElementById('course');
+    const sem = document.getElementById('sem');
+    const subject = document.getElementById('subject');
+    const internalExam = document.getElementById('internal_exam');
+  
+    course.addEventListener('change', () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('course', course.value);
+      url.searchParams.set('internal_exam', internalExam.value);
+      url.searchParams.delete('sem');
+      url.searchParams.delete('subject');
+      window.location.href = url.toString();
+    });
+  
+    sem.addEventListener('change', () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('course', course.value);
+      url.searchParams.set('sem', sem.value);
+      url.searchParams.set('internal_exam', internalExam.value);
+      url.searchParams.delete('subject');
+      window.location.href = url.toString();
+    });
+  });
+</script>
+{% endblock %}

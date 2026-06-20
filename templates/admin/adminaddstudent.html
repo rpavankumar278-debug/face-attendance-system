@@ -1,0 +1,57 @@
+<!-- Add/Edit Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ url_for('adminstudent') }}" class="w-100">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="modal-header text-white border-0 py-4" style="background-color: var(--primary-color); border-radius: 20px 20px 0 0;">
+          <h5 class="modal-title fw-bold"><i class="bi bi-person-plus me-2"></i>Student Enrollment Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" name="id" id="student_id" />
+
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label fw-bold small">Full Name</label>
+              <input type="text" name="name" id="student_name" class="form-control" placeholder="Enter here..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Mobile Number</label>
+              <input type="text" name="mobile" id="student_mobile" class="form-control" placeholder="Enter here..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Email ID</label>
+              <input type="email" name="emailid" id="student_email" class="form-control" placeholder="Enter here..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="student_course" class="form-label fw-bold small">Course</label>
+              <select name="course" id="student_course" class="form-select" required>
+                <option value="">-- Select Course --</option>
+                {% for course in courses %}
+                  <option value="{{ course[0] }}">{{ course[0] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="student_sem" class="form-label fw-bold small">Semester</label>
+              <select name="sem" id="student_sem" class="form-select" required>
+                <option value="">-- Select Semester --</option>
+                {% for s in semesters %}
+                  <option value="{{ s[0] }}">{{ s[0] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-12 mb-3">
+              <label class="form-label fw-bold small">Portal Password</label>
+              <input type="text" name="password" id="student_password" class="form-control" placeholder="Enter here..." required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 p-4 pt-0">
+          <button type="button" class="btn btn-light fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn text-white fw-bold px-4" style="background-color: var(--primary-color);">Save Enrollment</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show border-0 shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="card shadow-lg border-0" style="border-radius: 24px; overflow: hidden;">
+                <div class="text-center py-5 text-white" style="background-color: var(--primary-color);">
+                    <h3 class="fw-800 mb-0">Admin Portal</h3>
+                    <p class="opacity-75 small">Secure Management Access</p>
+                </div>
+                <div class="card-body p-5">
+                    <form method="POST" action="{{ url_for('admin') }}">
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-bold small text-uppercase">Email Address</label>
+                            <input type="email" name="email" class="form-control form-control-lg border-2 shadow-none" id="email" placeholder="Enter here..." required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-bold small text-uppercase">Password</label>
+                            <input type="password" name="password" class="form-control form-control-lg border-2 shadow-none" id="password" placeholder="Enter here..." required>
+                        </div>
+                        <div class="mb-4"></div>
+                        <button type="submit" class="btn btn-lg w-100 py-3 fw-bold text-white shadow-sm" style="background-color: var(--primary-color); border-radius: 12px;">
+                            Sign In
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

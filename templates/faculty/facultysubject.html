@@ -1,0 +1,32 @@
+{% extends 'faculty/facultybase.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-3">Subjects Assigned to {{ name }} ({{ fid }})</h3>
+
+  {% if subjects %}
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>Course</th>
+          <th>Semester</th>
+          <th>Subject</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in subjects %}
+        <tr>
+          <td>{{ row[0] }}</td>  {# course #}
+          <td>{{ row[1] }}</td>  {# sem #}
+          <td>{{ row[2] }}</td>  {# subject #}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="alert alert-info">No subjects assigned to you yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

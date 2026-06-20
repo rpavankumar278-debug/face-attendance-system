@@ -1,0 +1,95 @@
+{% extends "admin/adminbase.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; background: var(--primary-color);">
+    <div class="card-body p-4">
+      <h3 class="text-white fw-bold mb-0">Daily Attendance Logs</h3>
+      <p class="text-white opacity-75 mb-0 small">Access real-time verification records for specific sessions and dates</p>
+    </div>
+  </div>
+
+  <!-- Filter Control -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card-body p-4">
+      <form method="POST" class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label fw-bold small text-muted">ACADEMIC SUBJECT</label>
+          <select class="form-select border-2" id="subject" name="subject" required>
+            <option value="">-- Choose Subject --</option>
+            {% for subj in subjects %}
+              <option value="{{ subj }}" {% if subj == selected_subject %}selected{% endif %}>{{ subj }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label fw-bold small text-muted">LOG DATE</label>
+          <input type="date" class="form-control border-2" id="date" name="date" value="{{ selected_date }}" required>
+        </div>
+
+        <div class="col-md-2">
+          <button type="submit" class="btn text-white fw-bold w-100 rounded-3 py-2 shadow-sm" style="background-color: var(--primary-color);">
+            <i class="bi bi-file-earmark-text me-2"></i>Generate
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Report Results -->
+  <div class="card shadow-sm border-2" style="border-color: var(--primary-color) !important; border-radius: 20px; overflow: hidden;">
+    <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+      <h5 class="fw-bold mb-0" style="color: var(--primary-color);">Verification List</h5>
+      {% if selected_date %}
+        <span class="badge rounded-pill bg-light text-dark border px-3">Date: {{ selected_date }}</span>
+      {% endif %}
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead>
+            <tr>
+              <th class="px-4 py-3">Student ID</th>
+              <th class="py-3">Full Name</th>
+              <th class="px-4 py-3 text-center">Verification Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in attendance_records %}
+              <tr>
+                <td class="px-4 fw-bold text-muted small">#{{ record[0] }}</td>
+                <td class="fw-bold">{{ record[2] }}</td>
+                <td class="px-4 text-center">
+                  {% if record[1]|lower == 'present' %}
+                    <span class="badge bg-success-subtle text-success px-4 rounded-pill border border-success">
+                      <i class="bi bi-check-circle-fill me-1"></i> Present
+                    </span>
+                  {% else %}
+                    <span class="badge bg-danger-subtle text-danger px-4 rounded-pill border border-danger">
+                      <i class="bi bi-x-circle-fill me-1"></i> Absent
+                    </span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="3" class="text-center py-5 text-muted">
+                  <i class="bi bi-search d-block fs-2 mb-2 opacity-25"></i>
+                  No verification records found for this criteria.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-success-subtle { background-color: rgba(25, 135, 84, 0.1) !important; }
+  .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.1) !important; }
+</style>
+{% endblock %}
